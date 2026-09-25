@@ -90,6 +90,8 @@ FE-1  공간 관제
 
 두 출력은 목적이 다르기 때문에 서로 다른 경로로 처리한다.
 VLM은 AI Work Queue를 거쳐 실시간 처리와 분리해서 실행하므로, VLM 응답이 늦어지더라도 Tracking과 `Spatial State` 갱신은 멈추지 않는다.
+`Spatial State`의 계산 정본은 AI-2가 소유한다.
+FE는 AI Runtime에 직접 연결하지 않고, BE-3의 실시간 전달 계층을 통해 `Spatial State`를 받는다.
 
 AI-2는 AI 추론이 실제 서버에서 계속 동작하도록 하는 AI Runtime도 책임진다.
 CUDA, GPU, AI Container, Model Loading, RTSP Runtime, Inference Health, FPS, Latency, VRAM이 이 범위에 들어간다.
@@ -147,6 +149,8 @@ BE-1은 `RiskCandidate`에 포함된 VLM 결과를 다른 AI 근거와 함께 �
 | 비책임 영역 | CV, Tracking, Risk Policy, SafetyEvent 업무 규칙, Report 도메인, FE 화면 |
 
 BE-3의 핵심은 플랫폼, 실시간 전달, 운영이라는 세 축이다.
+BE-3는 다른 역할이 생성한 상태의 의미를 변경하지 않고, 이를 서비스 사용자에게 안정적으로 전달하는 기반을 책임진다.
+연결 관리, 다중 클라이언트 전달, 재연결, 권한 적용이 이 범위에 들어가며, `Spatial State` 계산, `RiskCandidate` 생성, `SafetyEvent` 판단, Event Lifecycle 결정은 포함하지 않는다.
 BE-3에게 제품 도메인 기능을 추가로 맡기지 않는다.
 
 ### 공간 관제
@@ -165,6 +169,7 @@ BE-3에게 제품 도메인 기능을 추가로 맡기지 않는다.
 
 FE는 도메인 로직의 복사본을 가지지 않는다.
 화면에 필요한 값은 백엔드와 AI가 계산한 결과를 받아서 표시하고, 관리자의 조작은 요청으로 백엔드에 전달한다.
+FE가 받는 실시간 상태와 도메인 상태는 모두 백엔드 API와 BE-3의 실시간 계층을 통해 전달되며, AI Runtime에 직접 연결하는 경로는 기본 구조로 두지 않는다.
 
 ## 협업 경계
 
@@ -174,14 +179,36 @@ FE는 도메인 로직의 복사본을 가지지 않는다.
 |---|---|---|---|
 | 모델 경계 | Model Artifact / Detection | AI-1 | AI-2 |
 | AI 경계 | RiskCandidate | AI-2 | BE-1 |
-| 공간 경계 | Spatial State | AI-2 | 백엔드 / FE 전달 계층 |
+| 공간 경계 | Spatial State | AI-2 | BE-3 Realtime |
 | 사건 경계 | SafetyEvent | BE-1 | BE-2 |
-| 운영 경계 | Domain State | BE-2 | 플랫폼 / FE |
-| 서비스 경계 | API / Realtime State | BE-3 | FE |
+| 운영 경계 | Domain State | BE-2 | BE-3 |
+| 서비스 경계 | Spatial State / Domain State / Event Update | BE-3 | FE |
 | 사용자 경계 | Review / Action / Verification | FE | 백엔드 |
 
 이 표는 네트워크 구현 순서가 아니라, 역할 사이에 주고받기로 약속한 결과물을 정리한 것이다.
 구체적인 형식과 전달 방식은 `03-system-concept.md`와 실제 구현 문서에서 정한다.
+
+주요 결과물이 실제로 전달되는 관계는 다음과 같다.
+앞의 `책임 흐름` 그림이 역할의 논리적 순서를 나타낸다면, 이 그림은 결과물이 어느 역할로 전달되는지를 나타낸다.
+
+```text
+AI-1
+  │ Detection
+  ▼
+AI-2
+  ├─ RiskCandidate ──────→ BE-1
+  │                          │ SafetyEvent
+  │                          ▼
+  │                        BE-2
+  │                          │ Domain State
+  │                          ▼
+  └─ Spatial State ──────→ BE-3 Realtime
+                             │
+                             ▼
+                            FE
+```
+
+BE-3는 `Spatial State`와 `Domain State`를 전달할 뿐이며, 두 상태를 계산하거나 의미를 바꾸지 않는다.
 
 ### 양방향 협업
 
@@ -272,12 +299,14 @@ AI-2와 BE-3는 다른 역할보다 책임 범위가 넓다.
 
 하나의 결과물은 하나의 역할만 정본으로 소유한다.
 
-| 소유 영역 | 정본 |
+| 소유 역할 | 정본 |
 |---|---|
-| AI 모델 | Detection |
-| AI 파이프라인 | Spatial State, RiskCandidate |
-| 백엔드 | SafetyEvent, Domain State |
-| 프런트엔드 | 화면 표현 상태 |
+| AI-1 | Detection: 인지 결과 |
+| AI-2 | Spatial State, RiskCandidate: 공간·시간 관측과 AI 후보 |
+| BE-1 | SafetyEvent: 공식 안전 사건 |
+| BE-2 | Event State, Action State, History: 사건 처리 상태와 조치 이력 |
+| BE-3 | 실시간 전달 상태와 플랫폼 운영 기반 |
+| FE-1 | 화면 표현 상태 |
 
 ### 로직 중복
 
@@ -299,6 +328,6 @@ AI-2와 BE-3는 다른 역할보다 책임 범위가 넓다.
 
 | 상태 | 내용 |
 |---|---|
-| 확정 | AI 2 / BE 3 / FE 1 구성<br>AI-1 = 모델·데이터<br>AI-2 = 파이프라인·Spatial AI<br>BE-1 = AI 연계·위험 도메인<br>BE-2 = 운영·이력 도메인<br>BE-3 = 플랫폼·실시간·공통 인프라<br>FE-1 = 공간 관제<br>AI 런타임 인프라 = AI-2<br>공통 인프라 = BE-3 |
+| 확정 | AI 2 / BE 3 / FE 1 구성<br>AI-1 = 모델·데이터<br>AI-2 = 파이프라인·Spatial AI<br>BE-1 = AI 연계·위험 도메인<br>BE-2 = 운영·이력 도메인<br>BE-3 = 플랫폼·실시간·공통 인프라 (Domain State와 Spatial State의 전달 기반이며, 소유자는 아님)<br>FE-1 = 공간 관제<br>AI 런타임 인프라 = AI-2<br>공통 인프라 = BE-3 |
 | 논의 필요 | 실제 팀원별 최종 업무 배정<br>핵심 이벤트 선정에 따른 세부 책임량<br>VLM의 MVP·핵심제품 적용 시점<br>작업자 알림 Endpoint 범위<br>3DGS·Unreal 실제 담당 여부 |
 | 확장 | Multi-camera<br>ReID<br>3DGS<br>BIM<br>Unreal<br>Kafka<br>Kubernetes |
