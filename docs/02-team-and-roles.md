@@ -9,9 +9,9 @@
 
 | 구분 | 역할 | 핵심 책임 |
 |---|---|---|
-| AI-1 | 모델·데이터 | 무엇이 보이는지 인지한다 |
-| AI-2 | 파이프라인·Spatial AI | 관측을 시간·공간적으로 의미화하여 위험 후보를 만든다 |
-| BE-1 | AI 연계·위험 도메인 | 위험 후보를 현장 업무 기준으로 판단하여 공식 사건으로 만든다 |
+| AI-1 | 모델·데이터 | 현실 상태를 인지하기 위한 모델과 데이터를 만든다 |
+| AI-2 | 파이프라인·Spatial AI | 관측을 시간·공간적으로 의미화하여 시스템이 검토할 후보를 만든다 |
+| BE-1 | AI 연계·위험 도메인 | 관측 후보를 현장 업무 기준으로 판단하여 공식 사건으로 만든다 |
 | BE-2 | 운영·이력 도메인 | 생성된 사건을 조치·검증·종료·기록까지 운영한다 |
 | BE-3 | 플랫폼·실시간·인프라 | 서비스가 안정적으로 저장·전달·배포되도록 공통 기반을 책임진다 |
 | FE-1 | 공간 관제 | 현재 현장과 사건을 보여주고 관리자 조작을 입력받는다 |
@@ -47,6 +47,9 @@ Discovery에서는 다음과 같은 관측 대상과 입력원도 함께 논의�
 따라서 이 문서에서 `확정`은 현재까지 합의된 역할 원칙에만 사용한다.
 
 ## 책임 흐름
+
+아래 흐름은 현재 가장 구체적으로 논의된 실시간 안전 관제 사례를 기준으로 한 대표 흐름이다.
+다른 관측 유형에서도 AI 인지, 시스템 후보, 공식 사건, 운영으로 이어지는 책임 경계는 유지되지만, 후보와 사건의 구체적인 유형은 달라질 수 있다.
 
 ```text
 AI-1  모델·데이터
@@ -317,44 +320,46 @@ Docker Compose, Backend Runtime, PostgreSQL, Redis, Nginx, TLS, FE 배포, 공�
 | 백엔드 | Java, Spring Boot, PostgreSQL, Redis |
 | 프런트엔드 | React, Canvas, Three.js |
 
-역할별로 사용할 수 있는 기술의 깊이를 단계별 예시로 정리하면 다음과 같다.
+역할별로 사용할 수 있는 기술을 깊이에 따라 정리하면 다음과 같다.
 
-| 역할 | MVP | 핵심제품 | 확장 |
+| 역할 | 기본 기술축 | 고도화 후보 | 추가 기술 후보 |
 |---|---|---|---|
-| AI-1 | Python, PyTorch, YOLOv8/YOLO11, CVAT | Fine-tuning, Segmentation, 평가 자동화 | Pose, 추가 모델, 균열 모델 |
-| AI-2 | Python, FastAPI, OpenCV, ByteTrack | Spatial/Temporal Engine, VLM, Redis/Celery, ONNX | BoT-SORT, ReID, TensorRT, 3DGS |
+| AI-1 | Python, PyTorch, YOLOv8/YOLO11, CVAT | Fine-tuning, Segmentation, 평가 자동화 | Pose, Temporal 계열, 구조물 결함 모델 등 추가 모델 |
+| AI-2 | Python, FastAPI, OpenCV, ByteTrack | Spatial/Temporal Engine, VLM, Redis/Celery, ONNX | BoT-SORT, ReID, TensorRT, 3DGS 연계 |
 | BE-1 | Java, Spring Boot, JPA, PostgreSQL/PostGIS | Context/Risk Policy | 복합 Policy, 외부 연계 |
 | BE-2 | Java, Spring Boot, JPA, PostgreSQL | Evidence, History, Report | 복합 Workflow, 외부 보고 |
 | BE-3 | Spring Boot, WebSocket/STOMP, Redis, Docker, Nginx | Redis Streams, Object Storage, Monitoring, CI/CD | Kafka, Kubernetes, Multi-instance |
 | FE-1 | React, TypeScript, Vite, Canvas, REST/STOMP | Three.js, 2.5D, 실시간 관제 | 3DGS, BIM, Unreal 연계 |
 
-이 표는 가능한 기술 깊이의 예시이며, 최종 구현 범위가 아니다.
-균열 모델, 3DGS, Kafka, Kubernetes, Unreal처럼 표에 있는 기술이라도 해당 담당자의 확정 개발 과제는 아니며, 포함 여부는 `04-scope-and-plan.md`에서 논의한다.
-
-MVP, 핵심제품, 확장으로 넘어가는 과정은 기술을 교체하는 과정이 아니다.
+각 열의 의미는 다음과 같다.
 
 ```text
-MVP       표준 기술로 전체 흐름을 처음부터 끝까지 연결한다
+기본 기술축      현재 역할을 구현하기 위한 표준 기술
   ↓
-핵심제품  같은 기술축을 더 깊게 사용한다
+고도화 후보      같은 역할을 더 안정적이고 정교하게 만드는 기술
   ↓
-확장      핵심 구조를 유지한 채 선택 기술을 추가한다
+추가 기술 후보   제품 범위와 실제 필요가 확인될 때 선택할 수 있는 기술
 ```
+
+이 표는 역할별 기술의 가능성과 깊이를 보여주는 것이며, 제품 단계나 구현 우선순위를 확정하지 않는다.
+표에 있는 기술이라도 해당 담당자의 확정 개발 과제는 아니며, 포함 여부는 `04-scope-and-plan.md`에서 논의한다.
+고도화와 추가는 기술을 교체하는 과정이 아니라, 같은 기술축을 유지한 채 깊이를 더하는 과정이다.
 
 따라서 YOLO를 다른 Detector로 바꾸거나, Canvas를 폐기하거나, Spring Boot와 PostgreSQL을 다른 기술로 바꾸는 전환을 전제로 하지 않는다.
 
 ## 역할 부담
 
 AI-2와 BE-3는 다른 역할보다 책임 범위가 넓다.
-이것은 역할 분리가 잘못되었다는 뜻이 아니며, 두 역할 모두 단계별로 우선순위를 두어 부담을 나눈다.
+이것은 역할 분리가 잘못되었다는 뜻이 아니며, 두 역할 모두 책임의 성격에 따라 우선순위를 두어 부담을 나눈다.
 
-| 단계 | AI-2 | BE-3 |
+| 우선순위 성격 | AI-2 | BE-3 |
 |---|---|---|
-| MVP | Tracking, Calibration, Spatial State, RiskCandidate | Realtime, Docker, Redis, Nginx, 기본 배포 |
-| 핵심제품 | Temporal 고도화, VLM, AI Queue | Monitoring, Object Storage, CI/CD, Redis Streams |
-| 확장 | Multi-camera, TensorRT, 3DGS | Kafka, Kubernetes, Scale-out |
+| 기본 책임 | Tracking, Calibration, Spatial State, 후보화 | Realtime, Docker, Redis, Nginx, 기본 배포 |
+| 고도화 후보 | Temporal 고도화, VLM, AI Queue | Monitoring, Object Storage, CI/CD, Redis Streams |
+| 추가 후보 | Multi-camera, TensorRT, 3DGS | Kafka, Kubernetes, Scale-out |
 
-확장 단계의 항목은 선택 사항이며, 담당자가 반드시 구현해야 하는 필수 책임이 아니다.
+이 표는 구현 순서를 확정하는 일정표가 아니라, 역할 부담의 성격을 설명하기 위한 예시다.
+추가 후보 항목은 선택 사항이며, 담당자가 반드시 구현해야 하는 필수 책임이 아니다.
 
 ## 책임 원칙
 
@@ -392,7 +397,6 @@ AI-2와 BE-3는 다른 역할보다 책임 범위가 넓다.
 | 상태 | 내용 |
 |---|---|
 | 역할 확정 | AI 2 / BE 3 / FE 1의 6인 역할 구조<br>AI-1 = 모델·데이터<br>AI-2 = 파이프라인·Spatial AI<br>BE-1 = AI 연계·위험 도메인<br>BE-2 = 운영·이력 도메인<br>BE-3 = 플랫폼·실시간·공통 인프라 (Domain State와 Spatial State의 전달 기반이며, 소유자는 아님)<br>FE-1 = 공간 관제<br>각 역할의 책임 경계<br>AI 런타임 인프라 = AI-2, 공통 인프라 = BE-3<br>Detection → AI 파이프라인 → 백엔드 → FE의 기본 책임 흐름 |
-| 논의 필요 | 실제 팀원별 최종 업무 배정<br>핵심 이벤트 선정에 따른 세부 책임량<br>VLM의 MVP·핵심제품 적용 시점<br>작업자 알림 Endpoint 범위<br>3DGS·Unreal 실제 담당 여부 |
-| 범위 미확정 | 실제 핵심 위험 유형<br>균열 포함 여부<br>화재·환경 센서 포함 여부<br>공정 상태 포함 여부<br>작업자 쓰러짐 포함 여부<br>센서·Telematics 실제 사용 범위<br>3DGS 실제 적용 여부<br>Unreal 실제 적용 여부<br>Multi-camera, ReID, BIM, Kafka, Kubernetes 같은 선택 기술의 도입 여부 |
+| 논의 필요 | 실제 팀원별 최종 업무 배정<br>핵심 이벤트 선정에 따른 세부 책임량<br>작업자 알림 Endpoint 범위<br>3DGS·Unreal 실제 담당 여부<br>최종 관측 대상과 핵심 위험 유형<br>균열·구조 점검 포함 범위<br>화재·환경 관측 범위<br>공정·현장 변화 범위<br>작업자 쓰러짐 포함 여부<br>센서·Telematics 실제 사용 범위<br>VLM 실제 적용 범위와 시점<br>3DGS 실제 적용 여부<br>Unreal 실제 적용 여부<br>Multi-camera, ReID, BIM, Kafka, Kubernetes 같은 선택 기술의 도입 여부 |
 
-`범위 미확정` 항목은 폐기된 기능이 아니라, 아직 제품 범위가 결정되지 않은 논의 대상이다.
+`논의 필요`에 있는 관측 범위와 기술 항목은 폐기된 기능이 아니라, 아직 제품 범위가 결정되지 않은 논의 대상이다.
