@@ -1,6 +1,6 @@
 # SENTIA 자율 프로젝트 세션 종합 정리
 > 작성 기준: 2026-09-25  
-> 목적: 본 세션에서 논의된 프로젝트 방향, 구인자 분석, 팀 구성, 역할 경계, 기술 아키텍처, 실무 조사, 개인 포지셔닝, 선행학습 및 ASC 적용 가능성까지 빠짐없이 통합 정리
+> 목적: 본 세션에서 논의된 프로젝트 방향, 팀 구성, 역할 경계, 기술 아키텍처, 실무 조사, 도메인 지식 활용 범위 및 ASC 적용 가능성까지 빠짐없이 통합 정리
 
 ---
 
@@ -30,7 +30,7 @@ Action / Report Automation
 2. **단순 객체 탐지의 오탐 및 맥락 부재**
 3. **감지 이후 실제 조치·보고 업무와의 단절**
 
-이정헌의 주 포지션은 최종적으로 다음처럼 정리되었다.
+AI Pipeline / Spatial Vision 담당의 주 포지션은 최종적으로 다음처럼 정리되었다.
 
 > **AI/Vision 파트 — Vision Pipeline / Spatial Vision / Spatial AI**
 
@@ -557,7 +557,7 @@ Backend 데이터 구조는 렌더링 방식에 종속되면 안 된다.
 }
 ```
 
-이 역할이 이정헌의 주 포지션이다.
+이 역할이 AI Pipeline / Spatial Vision 담당의 주 포지션이다.
 
 ---
 
@@ -633,11 +633,11 @@ Digital Twin
 
 # 9. 프로젝트 인프라
 
-초기에는 SSAFESTA보다 훨씬 가벼울 가능성이 높다고 판단했다.
+초기에는 이전 Unity WebGL 기반 프로젝트보다 훨씬 가벼울 가능성이 높다고 판단했다.
 
-## 9.1 SSAFESTA와 비교
+## 9.1 이전 Unity WebGL 기반 프로젝트와 비교
 
-SSAFESTA:
+이전 프로젝트:
 
 ```text
 React
@@ -746,9 +746,9 @@ Vision Systems
 
 ---
 
-# 11. 이정헌의 주 학습 영역
+# 11. AI Pipeline / Spatial Vision 담당의 주 학습 영역
 
-이번 프로젝트에서 본격적으로 새 주력으로 가져갈 영역:
+이번 프로젝트에서 해당 역할이 주력으로 가져갈 영역:
 
 ## 11.1 Computer Vision 실전
 
@@ -800,7 +800,7 @@ Vision Systems
 
 # 12. 모델링 영역은 별도 담당
 
-이미 모델 학습 담당을 별도로 구한 상황이므로, 이정헌은 모델링을 주 책임으로 가져갈 필요가 없다.
+이미 모델 학습 담당을 별도로 구한 상황이므로, AI Pipeline 담당은 모델링을 주 책임으로 가져갈 필요가 없다.
 
 모델 담당의 주 영역:
 
@@ -812,7 +812,7 @@ Vision Systems
 - Precision / Recall / mAP
 - Hyperparameter tuning
 
-이정헌은 다음 수준까지 이해하는 것이 적절하다.
+AI Pipeline 담당은 다음 수준까지 이해하는 것이 적절하다.
 
 - confidence 의미
 - NMS
@@ -830,95 +830,9 @@ Vision Systems
 
 ---
 
-# 13. 이정헌 자기소개 포지셔닝
+# 13. 실제 담당자와의 대화 결과
 
-최종 자기소개 양식은 다음처럼 정리되었다.
-
-## 자기소개
-
-- **이름**: 이정헌
-- **과정**: SSAFY **Java 전공반**
-- **전공**: 건설시스템공학
-- **희망 파트**: **Vision Systems / Spatial AI**
-- **관심 영역**: Tracking · Vision Pipeline · 좌표 변환 · Digital Twin 연동 · AI Runtime
-
-### 기존 역량
-- React Frontend Main
-- Three.js 기반 **2.5D 공간 편집 툴 구현**
-- Unity WebGL 연동 · 실시간 통신
-- FastAPI AI 서버 · Spring 연동 · 비동기 상태 처리
-- Docker · CI/CD · 배포
-
-### 강점
-- 높은 오너십 · 책임감
-- 새로운 기술의 빠른 학습 및 실전 적용
-- 구조 · 유지보수성 · 예외 처리
-- 디자인 · UX · 디테일
-- 시스템 간 연동 및 문제 원인 추적
-
-### 이번 프로젝트에서 확장하고 싶은 영역
-- OpenCV · Tracking
-- Camera Calibration · Homography
-- Camera → World 좌표 변환
-- 실시간 Vision Pipeline
-- GPU Inference Runtime
-- Vision 기반 Digital Twin
-
-### 모델링 영역
-- YOLO Fine-tuning · Segmentation은 별도 모델 담당과 협업
-- 모델 평가·추론 특성을 이해하고 실제 시스템에 안정적으로 적용
-
-### 협업 가능한 접점
-- Three.js · 2D/2.5D 공간 시각화
-- AI ↔ Backend ↔ Frontend 데이터·실시간 연동
-- Docker · CI/CD · GPU Runtime · 경량 배포 환경
-
-### 역할 방향
-- **주 역할과 책임 범위는 명확하게 유지**
-- **Vision/Spatial 영역을 학습 수준이 아닌 실제 완성도 있는 결과물까지 구현**
-
----
-
-# 14. 자기 PR 메시지 방향
-
-처음에는 다음 요소를 강조했다.
-
-- 실산업 문제 해결
-- 책임감
-- 포지션 외 기여
-- 완성도
-- 구조/예외/UX/디테일
-- 빠른 학습
-- Vision/Spatial 희망
-
-다만 다른 파트를 침범하는 사람처럼 보이지 않도록 표현을 보정했다.
-
-`보조 가능 영역` 대신:
-
-> **협업 가능한 접점**
-
-으로 표현했다.
-
-핵심 메시지 방향:
-
-> 기존 경험은 넓지만 이번 프로젝트에서는 Vision/Spatial 영역을 주 역할로 명확히 가져가고, 다른 파트와는 데이터·실시간 연동의 접점에서 협업한다.
-
----
-
-# 15. 실제 담당자와의 대화 결과
-
-이정헌 메시지:
-
-> 안녕하세요 연주님. 제가 생각하는 방향이랑 잘 맞는 거 같아서 이번 자율 프로젝트에 함께하고 싶습니다.  
-> 역할군은 일단 AI 파이프라인을 희망하지만, FE, BE, Infra 전부 소화 가능해서 팀 빌딩 상황에 따라서 얼마든지 조율 가능할 것 같아요.  
-> 필요하시다면 저도 제 주변에 같이 할 만한 사람들을 찾아볼게요.  
-> 감사합니다.
-
-이연주 답변:
-
-> 정헌님, 함께하기로 결정해 주셔서 감사드립니다.  
-> 포지션은 원하시는 **AI 파이프라인 및 Spatial Vision 영역을 최우선으로 배치**하고자 합니다.  
-> 추가 팀 빌딩과 관련해서도 같이 하고 싶은 분이 계시다면 편하게 소개 부탁드립니다.
+AI Pipeline / Spatial Vision 담당자는 프로젝트 합류 시점부터 AI Pipeline 역할을 희망했으며, 팀장과의 협의를 통해 AI Pipeline 및 Spatial Vision 영역을 최우선으로 배치하는 것으로 정리되었다. 추가 팀 빌딩은 팀원 소개를 통해 열어두었다.
 
 이로 인해:
 
@@ -928,29 +842,9 @@ Vision Systems
 
 ---
 
-# 16. 구인자 프로필 분석
+# 14. 팀장 역할 분석
 
-구인자는 다음 성향을 보였다.
-
-- 건축학과 5년제
-- 건축/건설 관련 실무 3년
-- Python 비전공 트랙
-- Java 학습 중
-- AI / Backend / Full Stack / Infra 관심
-- Django / Vue / FastAPI / Spring Boot 학습
-- OpenAI / Claude API
-- Tool Calling
-- RAG
-- Prompt Engineering
-- AI 해커톤 PM + AI 설계
-- 관통 프로젝트 PM + Frontend
-- 스터디장
-- 이전 프로젝트 팀장
-- 이전 프로젝트 Infra/배포 경험
-
-프로필의 핵심 문구:
-
-> **기획부터 구현까지 연결하고, 팀과 함께 성장하는 개발자**
+팀 내에 건설 현장 실무 경험을 가진 도메인 담당자(팀장)가 존재한다. 다만 최신 3D/BIM 관제 솔루션을 실무에서 직접 운용한 경험과는 구분해야 하므로, 현장 경험은 문제 가설 수립에 활용하고 최신 제품·시장 현황은 별도 조사한다.
 
 따라서 예상 역할은:
 
@@ -965,16 +859,16 @@ CV Model              낮음
 
 ---
 
-# 17. 구인자의 도메인 지식 활용 범위
+# 15. 도메인 지식 활용 범위
 
 중요한 보정:
 
-구인자는 건축 관련 3년 실무 경험이 있지만, **최근 도입되는 3D/BIM 관제 솔루션을 실제로 사용한 경험은 없음**.
+팀 내 도메인 담당은 건설 현장 실무 경험이 있지만, **최근 도입되는 3D/BIM 관제 솔루션을 실제로 사용한 경험은 없음**.
 
 따라서 다음처럼 분리한다.
 
 ```text
-[구인자의 건축 실무 경험]
+[도메인 담당의 현장 실무 경험]
         ↓
 현장 Workflow / 용어 / 문제 가설
         │
@@ -993,16 +887,16 @@ CV Model              낮음
 
 즉:
 
-- 구인자의 실무 경험 = **강력한 출발점**
+- 도메인 담당의 실무 경험 = **강력한 출발점**
 - 최신 스마트건설/BIM/3D 관제 실태 = **별도 검증 대상**
 
 ---
 
-# 18. 프로젝트 관련 핵심 질문
+# 16. 프로젝트 관련 핵심 질문
 
 최초 질문 후보에서 진짜 중요했던 것만 추렸다.
 
-## 18.1 데이터·현장성
+## 16.1 데이터·현장성
 
 - 실제 CCTV/현장 영상 데이터를 확보했는가?
 - 공개 데이터셋 중심인가?
@@ -1010,25 +904,25 @@ CV Model              낮음
 - 실제 현장의 불편함을 검증할 경로가 있는가?
 - 안전관리자 / 시공담당 / BIM담당 인터뷰가 가능한가?
 
-## 18.2 AI 범위
+## 16.2 AI 범위
 
 - Detection / Fine-tuning까지만 하는가?
 - Tracking까지 포함하는가?
 - Segmentation은 실제 어떤 문제를 해결하기 위해 쓰는가?
 
-## 18.3 Digital Twin
+## 16.3 Digital Twin
 
 - Pixel → World / Floorplan 변환까지 하는가?
 - 단순 bbox 표시인가?
 - 실제 객체 위치·상태를 실시간 동기화하는가?
 
-## 18.4 실시간 처리
+## 16.4 실시간 처리
 
 - RTSP/CCTV 실시간인가?
 - 업로드 영상 분석인가?
 - AI → Backend → FE 상태 전달까지 실시간인가?
 
-## 18.5 팀 구성
+## 16.5 팀 구성
 
 - AI 몇 명인가?
 - Model/Data와 Pipeline/Spatial을 분리할 수 있는가?
@@ -1045,11 +939,11 @@ CV Model              낮음
 
 ---
 
-# 19. 구인자의 실제 프로젝트 구상 답변
+# 17. 팀장의 실제 프로젝트 구상 답변
 
-구인자는 다음 3개의 공백을 문제로 제시했다.
+팀장은 다음 3개의 공백을 문제로 제시했다.
 
-## 19.1 무겁고 깨지기 쉬운 3D BIM
+## 17.1 무겁고 깨지기 쉬운 3D BIM
 
 - IFC 변환 과정의 스키마 문제
 - 좌표 정합 문제
@@ -1060,7 +954,7 @@ CV Model              낮음
   - 경량 공간 모델
   - 비전 카메라 좌표 역투영
 
-## 19.2 단순 객체 탐지의 오탐·맥락 부재
+## 17.2 단순 객체 탐지의 오탐·맥락 부재
 
 예:
 
@@ -1077,7 +971,7 @@ CV Model              낮음
 - VLM
 - 상태 처리 파이프라인
 
-## 19.3 감지와 조치 사이 단절
+## 17.3 감지와 조치 사이 단절
 
 - 알람 후 수기 보고서
 - 영상 되돌려보기
@@ -1090,7 +984,7 @@ CV Model              낮음
 
 ---
 
-# 20. 이 답변에서 확인된 프로젝트 정체성
+# 18. 이 답변에서 확인된 프로젝트 정체성
 
 단순:
 
@@ -1117,7 +1011,7 @@ WHAT DO WE DO?
 
 ---
 
-# 21. VLM 적용 방향
+# 19. VLM 적용 방향
 
 VLM을 모든 프레임에 넣는 것은 비효율적이다.
 
@@ -1153,7 +1047,7 @@ VLM
 
 ---
 
-# 22. 최신 스마트건설 / Digital Twin 실무 조사
+# 20. 최신 스마트건설 / Digital Twin 실무 조사
 
 조사 결과 핵심 결론:
 
@@ -1167,7 +1061,7 @@ VLM
 
 ---
 
-# 23. 현장 실무자들이 사용하는 주요 툴
+# 21. 현장 실무자들이 사용하는 주요 툴
 
 ## Bluebeam Revu
 
@@ -1393,7 +1287,7 @@ VLM
 
 ---
 
-# 24. 국내 대형 건설사 흐름
+# 22. 국내 대형 건설사 흐름
 
 ## 현대건설
 
@@ -1458,7 +1352,7 @@ Q-BOX 등에서:
 
 ---
 
-# 25. 기존 가설에 대한 재평가
+# 23. 기존 가설에 대한 재평가
 
 | 가설 | 평가 |
 |---|---|
@@ -1470,7 +1364,7 @@ Q-BOX 등에서:
 
 ---
 
-# 26. 프로젝트의 더 강한 정의
+# 24. 프로젝트의 더 강한 정의
 
 약한 정의:
 
@@ -1507,7 +1401,7 @@ Q-BOX식 Workflow
 
 ---
 
-# 27. MVP 방향
+# 25. MVP 방향
 
 조사 결과를 반영한 MVP:
 
@@ -1525,7 +1419,7 @@ Q-BOX식 Workflow
 
 ---
 
-# 28. 균열 vs 안전모/중장비
+# 26. 균열 vs 안전모/중장비
 
 둘은 성격이 다르다.
 
@@ -1572,9 +1466,9 @@ t2 crack
 
 ---
 
-# 29. 현재 실제 팀 구성 구상
+# 27. 현재 실제 팀 구성 구상
 
-현재 구인자가 생각해온 분배:
+현재 팀장이 생각해온 분배:
 
 ```text
 FE 1
@@ -1588,9 +1482,9 @@ AI 2
 
 추가 정보:
 
-- 구인자는 **AI 파트와 붙어있는 BE** 희망
+- 팀장은 **AI 파트와 붙어있는 BE** 희망
 - AI 모델 학습 담당 1명 이미 모집
-- 이정헌은 AI Pipeline / Spatial Vision
+- 합류 인원 1명은 AI Pipeline / Spatial Vision
 
 가장 자연스러운 구성:
 
@@ -1601,16 +1495,16 @@ FE 1
 BE 3
 ├─ BE-1 : Domain / API / DB
 ├─ BE-2 : Backend + Infra / Platform
-└─ BE-3 : AI-linked Backend ← 구인자
+└─ BE-3 : AI-linked Backend ← 팀장
 
 AI 2
 ├─ AI-1 : Model / Data / Fine-tuning ← 이미 모집
-└─ AI-2 : Vision Pipeline / Spatial Vision ← 이정헌
+└─ AI-2 : Vision Pipeline / Spatial Vision ← 합류 확정
 ```
 
 ---
 
-# 30. 구인자와 이정헌 역할 경계
+# 28. AI-linked Backend와 Vision Pipeline 역할 경계
 
 모델 담당:
 
@@ -1620,7 +1514,7 @@ Dataset
 → Detection / Segmentation
 ```
 
-이정헌:
+Vision Pipeline / Spatial Vision 담당:
 
 ```text
 Video
@@ -1631,7 +1525,7 @@ Video
 → Spatial Observation
 ```
 
-구인자 / AI-linked BE:
+팀장 / AI-linked BE:
 
 ```text
 Observation
@@ -1662,7 +1556,7 @@ Twin State
 
 ---
 
-# 31. 팀 구성에서 Infra 배치
+# 29. 팀 구성에서 Infra 배치
 
 현재 프로젝트 규모를 보면 별도 Infra 전담은 필수는 아닐 가능성이 높다.
 
@@ -1675,7 +1569,7 @@ Domain / DB / API
 공통 Infra / Deploy
 ```
 
-이정헌은 자기 Vision Runtime 쪽:
+Vision Pipeline 담당은 자기 Vision Runtime 쪽:
 
 - Docker
 - GPU
@@ -1699,7 +1593,7 @@ Domain / DB / API
 
 ---
 
-# 32. 구인자와 첫 구체 회의에서 해야 할 일
+# 30. 팀장과의 첫 구체 회의에서 해야 할 일
 
 회의 목표는 세 가지다.
 
@@ -1718,7 +1612,7 @@ Domain / DB / API
 
 ---
 
-# 33. 첫 회의 산출물
+# 31. 첫 회의 산출물
 
 회의 종료 시 최소:
 
@@ -1728,44 +1622,14 @@ Domain / DB / API
 4. 입력 데이터 형태
 5. AI/Vision 범위
 6. Digital Twin 범위
-7. 이정헌 역할 경계
+7. Vision Pipeline 담당 역할 경계
 8. 추가 모집 직군
 9. 기술 검증 항목
 10. 다음 회의 전 PoC / 조사 과제
 
 ---
 
-# 34. 이정헌 선행학습 순서
-
-우선순위:
-
-```text
-① Object Tracking
-        ↓
-② OpenCV
-        ↓
-③ Homography / Camera Calibration
-        ↓
-④ RTSP / Real-time Video Pipeline
-        ↓
-⑤ YOLO Inference Runtime
-        ↓
-⑥ Spatial State / Observation 설계
-        ↓
-⑦ GPU / Docker Runtime
-```
-
-첫 회의 전:
-
-- ①~③ 개념 이해
-
-프로젝트 조건 확정 후:
-
-- 작은 PoC로 즉시 전환
-
----
-
-# 35. ASC 모니터링 / 작업 큐 철학 적용 가능성
+# 32. ASC 모니터링 / 작업 큐 철학 적용 가능성
 
 가능하며 매우 잘 맞는다.
 
@@ -1781,7 +1645,7 @@ Domain / DB / API
 
 ---
 
-# 36. Realtime Plane vs Work Plane
+# 33. Realtime Plane vs Work Plane
 
 ```text
              REALTIME PLANE
@@ -1825,7 +1689,7 @@ Report Queue
 
 ---
 
-# 37. Detection ≠ Incident ≠ Notification
+# 34. Detection ≠ Incident ≠ Notification
 
 한 프레임에서 위험해 보인다고 바로 HIGH 알림을 띄우지 않는다.
 
@@ -1852,7 +1716,7 @@ RESOLVED
 
 ---
 
-# 38. VLM Work Queue
+# 35. VLM Work Queue
 
 VLM을 매 프레임 실행하지 않고 후보만 넣는다.
 
@@ -1898,7 +1762,7 @@ Twin State
 
 ---
 
-# 39. 동적 동시성 적용
+# 36. 동적 동시성 적용
 
 관측 대상:
 
@@ -1940,7 +1804,7 @@ Report generation
 
 ---
 
-# 40. 프로젝트 Monitoring 항목
+# 37. 프로젝트 Monitoring 항목
 
 | 계층 | 핵심 관측 |
 |---|---|
@@ -1966,7 +1830,7 @@ Report generation
 
 ---
 
-# 41. 현재 이정헌의 최종 직군 표현
+# 38. 현재 Vision Pipeline 담당의 최종 직군 표현
 
 가장 정확한 표현:
 
@@ -1982,17 +1846,13 @@ Report generation
 
 > **Vision Systems / Spatial AI Engineer**
 
-포트폴리오 표현:
-
-> **Computer Vision Pipeline & Spatial Integration**
-
 가장 자연스러운 한 줄:
 
 > **AI/Vision 파트 — 실시간 Vision Pipeline, Tracking 및 Spatial Mapping 담당**
 
 ---
 
-# 42. 현재 프로젝트의 가장 강한 제품 정의
+# 39. 현재 프로젝트의 가장 강한 제품 정의
 
 최종적으로 가장 강하게 정리되는 한 문장:
 
@@ -2000,7 +1860,7 @@ Report generation
 
 ---
 
-# 43. 현재 이정헌의 역할 한 문장
+# 40. 현재 Vision Pipeline 담당의 역할 한 문장
 
 > **CV 모델 자체를 만드는 것보다, 모델이 인식한 현실 영상을 Tracking·공간 좌표화·실시간 파이프라인을 거쳐 Digital Twin이 사용할 수 있는 상태로 만드는 Vision Systems / Spatial AI를 주 영역으로 가져간다.**
 
@@ -2010,9 +1870,9 @@ Infra까지 포함하면:
 
 ---
 
-# 44. 현재까지 확인된 리스크
+# 41. 현재까지 확인된 리스크
 
-1. 구인자의 현장 경험은 강하지만 최신 3D/BIM 관제 제품 실사용 경험은 없음
+1. 팀 도메인 담당의 현장 경험은 강하지만 최신 3D/BIM 관제 제품 실사용 경험은 없음
 2. "3D가 무거우니 2D/2.5D"만으로는 차별화 부족
 3. 균열과 PPE/중장비는 AI 문제 성격이 다름
 4. VLM을 실시간 핵심 경로에 넣으면 latency/비용 리스크
@@ -2025,16 +1885,16 @@ Infra까지 포함하면:
 
 ---
 
-# 45. 현재까지의 가장 합리적인 팀 구조
+# 42. 현재까지의 가장 합리적인 팀 구조
 
 ```text
-[구인자 / Team Lead]
+[Team Lead]
 Domain / Product / AI-linked Backend
           │
           ├─────────────────────┐
           │                     │
           ▼                     ▼
-      [AI-1]                [이정헌]
+      [AI-1]                [AI-2]
    Model / Data         Vision Systems
  Fine-tuning / Seg       Spatial Vision
           │                     │
@@ -2052,13 +1912,13 @@ Domain / Product / AI-linked Backend
         2D/2.5D Twin / Alert / UX
 
      ────── Infra / Runtime ──────
-  AI Runtime: 이정헌 중심
+  AI Runtime: AI-2 중심
   Common Infra: BE/Platform 중심
 ```
 
 ---
 
-# 46. 전체 프로젝트의 철학
+# 43. 전체 프로젝트의 철학
 
 이 프로젝트가 강해지기 위한 핵심 철학은 다음과 같다.
 
@@ -2086,11 +1946,11 @@ AI 모델
 
 ---
 
-# 47. 다음 단계
+# 44. 다음 단계
 
 가장 가까운 다음 액션은 다음과 같다.
 
-1. 구인자와 대면/회의
+1. 팀장과 대면/회의
 2. 실제 Pain Point 구체화
 3. 현직 사용자 인터뷰 가능성 확인
 4. MVP 시나리오 하나 고정
@@ -2098,12 +1958,12 @@ AI 모델
 6. Model / Vision / Backend 경계 확정
 7. FE 범위 확정
 8. Infra 최소 구조 확정
-9. 이정헌 Tracking / OpenCV / Homography 선행학습
+9. Vision Pipeline 담당 Tracking / OpenCV / Homography 선행학습
 10. 작은 Camera → Tracking → Floorplan PoC 시작
 
 ---
 
-# 48. 조사에서 언급된 주요 제품/자료
+# 45. 조사에서 언급된 주요 제품/자료
 
 아래는 세션 중 실무 조사에서 다룬 대표 제품 및 사례다.
 
@@ -2125,7 +1985,7 @@ AI 모델
 
 ---
 
-# 49. 최종 요약
+# 46. 최종 요약
 
 현재 프로젝트는 다음처럼 보는 것이 가장 정확하다.
 
@@ -2151,57 +2011,18 @@ Incident
 Report / Action
 ```
 
-이정헌의 역할:
+Vision Pipeline 담당의 역할:
 
 ```text
 AI Model 담당
       ↓
-★ 이정헌: Vision Pipeline / Spatial Vision / AI Runtime ★
+★ AI-2: Vision Pipeline / Spatial Vision / AI Runtime ★
       ↓
 AI-linked Backend
 ```
 
-즉 이번 프로젝트에서 새롭게 주 무대로 가져갈 전문성은:
+즉 이 역할이 주 무대로 가져갈 전문성은:
 
 > **Computer Vision + Spatial Computing + Realtime Systems**
 
-이며, 기존 강점인:
-
-- 시스템 통합
-- 비동기 처리
-- 실시간 통신
-- FastAPI
-- Spring 연동
-- Three.js 공간 경험
-- Docker/CI/CD
-
-을 그대로 활용하면서:
-
-- OpenCV
-- Tracking
-- Camera Calibration
-- Homography
-- Pixel → World
-- GPU Inference Runtime
-
-을 새로 깊게 확장하는 구조다.
-
-최종적으로 이 프로젝트가 잘 풀리면, 이정헌의 기술 서사는 다음과 같이 이어질 수 있다.
-
-```text
-Construction Systems
-+
-Web / Backend
-+
-AI Application
-+
-Realtime Integration
-        ↓
-Vision Systems / Spatial AI
-        ↓
-Digital Twin
-        ↓
-Simulation / Unreal
-        ↓
-Physical AI / Robotics
-```
+이다.
