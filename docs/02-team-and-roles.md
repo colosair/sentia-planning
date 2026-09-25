@@ -20,10 +20,31 @@
 
 이 문서에서 자주 쓰는 결과물 이름은 다음과 같다.
 
-- `Detection`: AI 모델이 영상 한 장면에서 찾아낸 객체와 상태
-- `Spatial State`: 작업자와 장비가 현재 현장의 어디에 있는지를 나타내는 상태
-- `RiskCandidate`: AI가 위험해 보인다고 판단한 관측 후보
-- `SafetyEvent`: 현장 업무 기준으로 처리하기로 결정한 공식 안전 사건
+- `Detection`: AI 모델이 영상이나 이미지에서 찾아낸 객체와 상태
+- `Spatial State`: 관측 대상이 현재 현장의 어디에 있는지를 나타내는 상태
+- `RiskCandidate`: AI가 위험해 보인다고 판단한 관측 후보 (현재 안전 관제 흐름의 대표 용어)
+- `SafetyEvent`: 현장 업무 기준으로 처리하기로 결정한 공식 안전 사건 (현재 안전 관제 흐름의 대표 용어)
+
+## 관측 범위
+
+이 문서의 역할 설명은 실시간 CCTV 안전 관제를 대표 흐름으로 삼는다.
+작업자, 보호구, 중장비, 위험구역을 CCTV로 관측하는 흐름이 지금까지 가장 구체적으로 논의되었기 때문이다.
+다만 이 흐름이 SENTIA의 모든 입력과 AI 처리 방식은 아니다.
+
+Discovery에서는 다음과 같은 관측 대상과 입력원도 함께 논의되었다.
+
+| 관측 대상 | 논의된 입력원 |
+|---|---|
+| 작업자, 보호구, 중장비, 위험구역, 작업 행동, 쓰러짐·이상 상태 | 고정 CCTV, 녹화 영상, Wearable / IMU |
+| 균열, 구조물 결함 | 일반 이미지, 점검 이미지, 스마트폰, 드론, 구조물 센서 |
+| 화재, 연기, 과열, 누출, 환경 이상 | CCTV, Thermal, IoT·환경 센서 |
+| 공정 상태, 현장 변화, 자재, 장비 상태 | CCTV, 스마트폰, 360 카메라, 3DGS, GPS / GNSS, 장비 Telematics |
+| 공간 기준 | 도면, CAD / BIM |
+| 개발·검증 입력 | Replay, Simulation |
+
+이 표는 구현 대상 목록이 아니며, 어떤 대상과 입력을 제품 범위에 넣을지는 `04-scope-and-plan.md`에서 정한다.
+이 문서는 범위가 어느 방향으로 정해지더라도 각 역할의 책임 원칙이 유지되도록 역할을 정의한다.
+따라서 이 문서에서 `확정`은 현재까지 합의된 역할 원칙에만 사용한다.
 
 ## 책임 흐름
 
@@ -64,7 +85,7 @@ FE-1  공간 관제
 
 `AI-1 · 모델·데이터`
 
-> 현장 영상에서 필요한 객체와 상태를 인지할 수 있는 모델을 만든다.
+> 프로젝트에서 필요한 현실 상태를 인지하기 위한 모델과 데이터를 책임진다.
 
 | 항목 | 내용 |
 |---|---|
@@ -74,11 +95,23 @@ FE-1  공간 관제
 | 기술 영역 | Python, PyTorch, YOLO, CVAT |
 | 비책임 영역 | Tracking, Calibration, Homography, Pixel → Site 변환, RiskCandidate, SafetyEvent, 백엔드, 관제 UI |
 
+현재 대표 흐름에서는 YOLO 기반 Detection이 중심이지만, AI-1의 역할이 CCTV 객체 탐지에 한정되지는 않는다.
+관측 대상에 따라 다음과 같은 모델 계열이 필요할 수 있다.
+
+| 관측 대상 | 모델 계열 예시 |
+|---|---|
+| 작업자, 보호구, 장비 | Detection |
+| 균열, 구조물 결함 | Detection, Segmentation |
+| 행동, 상태 | 필요한 경우 Pose, Temporal 계열 |
+
+이 표는 가능한 모델 계열의 예시이며, 어떤 모델을 실제 제품에 포함할지는 아직 정하지 않았다.
+
 ### AI 파이프라인
 
 `AI-2 · 파이프라인·Spatial AI`
 
-> AI 모델의 Detection을 추적·좌표화·상태화하고, 필요한 AI 판단을 결합하여 `RiskCandidate`를 만든다.
+> AI 모델의 출력을 SENTIA 시스템에서 사용할 수 있는 상태·공간·시간·후보 데이터로 연결하는 파이프라인을 책임진다.
+> 현재 대표 흐름인 실시간 CCTV 관측에서는 Detection을 추적·좌표화·상태화하고, 필요한 AI 판단을 결합하여 `RiskCandidate`를 만든다.
 
 | 항목 | 내용 |
 |---|---|
@@ -87,6 +120,18 @@ FE-1  공간 관제
 | 출력 | `Spatial State`: 실시간 관제용<br>`RiskCandidate`: 위험 판단용 |
 | 기술 영역 | Python, FastAPI, OpenCV, ByteTrack, CUDA / GPU |
 | 비책임 영역 | 작업계획 정본, 위험성평가 정본, 공식 Severity, SafetyEvent Lifecycle, 공통 DB 운영, FE Rendering, 공통 서비스 배포 |
+
+위 표의 책임 영역은 대표 흐름인 실시간 CCTV 관측을 기준으로 적었다.
+AI-2가 모든 입력에 Tracking과 Homography를 적용하는 것은 아니며, 입력 종류에 따라 처리 방식이 달라질 수 있다.
+
+| 입력 | 가능한 처리 방식 |
+|---|---|
+| 동적 CCTV 관측 | Tracking, 공간·시간 상태 계산 |
+| 점검 이미지 | 결함 결과의 위치와 구조물 연결 |
+| 센서, Telematics | 시간 동기화, 상태 결합 |
+| 현장 재현 촬영 | 공간 좌표계와 촬영 시점 연결 |
+
+이 표는 역할이 적용될 수 있는 방식의 예시이며, 구현을 확정한 것은 아니다.
 
 두 출력은 목적이 다르기 때문에 서로 다른 경로로 처리한다.
 VLM은 AI Work Queue를 거쳐 실시간 처리와 분리해서 실행하므로, VLM 응답이 늦어지더라도 Tracking과 `Spatial State` 갱신은 멈추지 않는다.
@@ -100,7 +145,8 @@ CUDA, GPU, AI Container, Model Loading, RTSP Runtime, Inference Health, FPS, Lat
 
 `BE-1 · AI 연계·위험 도메인`
 
-> AI가 만든 `RiskCandidate`를 실제 현장 업무와 안전 정책에 연결하여 공식 `SafetyEvent`로 만든다.
+> AI와 현실 관측의 후보를 현장 업무·정책·Context와 결합하여, 시스템이 공식적으로 관리할 사건으로 승격시킨다.
+> 현재 안전 관제 흐름에서는 `RiskCandidate`를 받아 `SafetyEvent`를 만든다.
 
 | 항목 | 내용 |
 |---|---|
@@ -112,8 +158,13 @@ CUDA, GPU, AI Container, Model Loading, RTSP Runtime, Inference Health, FPS, Lat
 
 AI-2와 BE-1의 경계는 다음과 같다.
 
-- **AI-2**는 위험해 보이는 관측 후보를 만든다.
-- **BE-1**은 그 후보를 실제 업무 기준에서도 사건으로 처리할지 결정한다.
+- **AI-2**는 시스템이 검토할 AI 후보를 만든다.
+- **BE-1**은 그 후보를 업무적으로 처리할 공식 사건으로 만들지 결정한다.
+
+이 경계의 핵심은 용어가 아니라 의미에 있다.
+현재 대표 안전 관제 흐름에서는 `RiskCandidate`와 `SafetyEvent`라는 이름을 사용한다.
+구조물 결함, 환경 이상, 공정 이상이 제품 범위에 들어온다면 Defect, Issue, Anomaly 같은 다른 유형이 필요할 수 있다.
+그 경우 후보와 사건 계층의 공통 유형과 세부 유형은 `03-system-concept.md`에서 추가로 논의한다.
 
 VLM은 BE-1이 실행하지 않는다.
 BE-1은 `RiskCandidate`에 포함된 VLM 결과를 다른 AI 근거와 함께 참고하여 판단한다.
@@ -133,6 +184,9 @@ BE-1은 `RiskCandidate`에 포함된 VLM 결과를 다른 AI 근거와 함께 �
 | 비책임 영역 | AI 추론, RiskCandidate 생성, 위험 정책 자체, 실시간 인프라, 공통 배포, FE |
 
 > **BE-1은 사건을 만들고, BE-2는 만들어진 사건을 처리하고 끝낸다.**
+
+BE-2의 핵심은 특정 `SafetyEvent` 유형이 아니라, 공식 사건을 검토, 조치, 확인, 검증, 종료, 이력·보고로 운영하는 흐름이다.
+따라서 구조물 결함이나 환경 이상이 이후 제품 범위에 들어오더라도 같은 운영·이력 원칙을 다시 사용할 수 있다.
 
 ### 플랫폼
 
@@ -170,6 +224,9 @@ BE-3에게 제품 도메인 기능을 추가로 맡기지 않는다.
 FE는 도메인 로직의 복사본을 가지지 않는다.
 화면에 필요한 값은 백엔드와 AI가 계산한 결과를 받아서 표시하고, 관리자의 조작은 요청으로 백엔드에 전달한다.
 FE가 받는 실시간 상태와 도메인 상태는 모두 백엔드 API와 BE-3의 실시간 계층을 통해 전달되며, AI Runtime에 직접 연결하는 경로는 기본 구조로 두지 않는다.
+
+FE-1의 핵심 원칙은 같은 Site, Floor, Zone, 좌표, 시간 기준의 데이터를 2D·2.5D 공간에서 표현하는 것이다.
+제품 범위에 따라 구조물 결함 위치, 센서 상태, 점검 결과, 현장 스냅샷, 공정·변화 정보도 같은 기준으로 표현할 수 있으며, 이 대상들을 현재 구현 책임으로 확정한 것은 아니다.
 
 ## 협업 경계
 
@@ -233,6 +290,9 @@ AI 파이프라인은 백엔드가 제공한 Context를 읽어서 실시간 관�
 
 CUDA, GPU Runtime, AI Worker, Model Artifact Loading, RTSP, Inference Container, Inference Health, FPS, Latency, VRAM, AI Queue를 책임진다.
 
+AI 런타임은 CCTV 추론 서버만을 뜻하지 않는다.
+사용하는 AI 처리에 따라 Inference Worker, Image Processing Worker, VLM Worker, Reality Processing Worker 등으로 늘어날 수 있으며, 실제로 필요한 Worker는 이후에 결정한다.
+
 ### 공통 플랫폼
 
 주 담당은 **BE-3**다.
@@ -257,7 +317,7 @@ Docker Compose, Backend Runtime, PostgreSQL, Redis, Nginx, TLS, FE 배포, 공�
 | 백엔드 | Java, Spring Boot, PostgreSQL, Redis |
 | 프런트엔드 | React, Canvas, Three.js |
 
-역할별 기술은 단계에 따라 다음과 같이 깊어진다.
+역할별로 사용할 수 있는 기술의 깊이를 단계별 예시로 정리하면 다음과 같다.
 
 | 역할 | MVP | 핵심제품 | 확장 |
 |---|---|---|---|
@@ -267,6 +327,9 @@ Docker Compose, Backend Runtime, PostgreSQL, Redis, Nginx, TLS, FE 배포, 공�
 | BE-2 | Java, Spring Boot, JPA, PostgreSQL | Evidence, History, Report | 복합 Workflow, 외부 보고 |
 | BE-3 | Spring Boot, WebSocket/STOMP, Redis, Docker, Nginx | Redis Streams, Object Storage, Monitoring, CI/CD | Kafka, Kubernetes, Multi-instance |
 | FE-1 | React, TypeScript, Vite, Canvas, REST/STOMP | Three.js, 2.5D, 실시간 관제 | 3DGS, BIM, Unreal 연계 |
+
+이 표는 가능한 기술 깊이의 예시이며, 최종 구현 범위가 아니다.
+균열 모델, 3DGS, Kafka, Kubernetes, Unreal처럼 표에 있는 기술이라도 해당 담당자의 확정 개발 과제는 아니며, 포함 여부는 `04-scope-and-plan.md`에서 논의한다.
 
 MVP, 핵심제품, 확장으로 넘어가는 과정은 기술을 교체하는 과정이 아니다.
 
@@ -328,6 +391,8 @@ AI-2와 BE-3는 다른 역할보다 책임 범위가 넓다.
 
 | 상태 | 내용 |
 |---|---|
-| 확정 | AI 2 / BE 3 / FE 1 구성<br>AI-1 = 모델·데이터<br>AI-2 = 파이프라인·Spatial AI<br>BE-1 = AI 연계·위험 도메인<br>BE-2 = 운영·이력 도메인<br>BE-3 = 플랫폼·실시간·공통 인프라 (Domain State와 Spatial State의 전달 기반이며, 소유자는 아님)<br>FE-1 = 공간 관제<br>AI 런타임 인프라 = AI-2<br>공통 인프라 = BE-3 |
+| 역할 확정 | AI 2 / BE 3 / FE 1의 6인 역할 구조<br>AI-1 = 모델·데이터<br>AI-2 = 파이프라인·Spatial AI<br>BE-1 = AI 연계·위험 도메인<br>BE-2 = 운영·이력 도메인<br>BE-3 = 플랫폼·실시간·공통 인프라 (Domain State와 Spatial State의 전달 기반이며, 소유자는 아님)<br>FE-1 = 공간 관제<br>각 역할의 책임 경계<br>AI 런타임 인프라 = AI-2, 공통 인프라 = BE-3<br>Detection → AI 파이프라인 → 백엔드 → FE의 기본 책임 흐름 |
 | 논의 필요 | 실제 팀원별 최종 업무 배정<br>핵심 이벤트 선정에 따른 세부 책임량<br>VLM의 MVP·핵심제품 적용 시점<br>작업자 알림 Endpoint 범위<br>3DGS·Unreal 실제 담당 여부 |
-| 확장 | Multi-camera<br>ReID<br>3DGS<br>BIM<br>Unreal<br>Kafka<br>Kubernetes |
+| 범위 미확정 | 실제 핵심 위험 유형<br>균열 포함 여부<br>화재·환경 센서 포함 여부<br>공정 상태 포함 여부<br>작업자 쓰러짐 포함 여부<br>센서·Telematics 실제 사용 범위<br>3DGS 실제 적용 여부<br>Unreal 실제 적용 여부<br>Multi-camera, ReID, BIM, Kafka, Kubernetes 같은 선택 기술의 도입 여부 |
+
+`범위 미확정` 항목은 폐기된 기능이 아니라, 아직 제품 범위가 결정되지 않은 논의 대상이다.
