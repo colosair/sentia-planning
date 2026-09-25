@@ -830,7 +830,7 @@ AI Pipeline 담당은 다음 수준까지 이해하는 것이 적절하다.
 
 ---
 
-# 13. 실제 담당자와의 대화 결과
+# 13. 역할 합의 결과
 
 AI Pipeline / Spatial Vision 담당자는 프로젝트 합류 시점부터 AI Pipeline 역할을 희망했으며, 팀장과의 협의를 통해 AI Pipeline 및 Spatial Vision 영역을 최우선으로 배치하는 것으로 정리되었다. 추가 팀 빌딩은 팀원 소개를 통해 열어두었다.
 
